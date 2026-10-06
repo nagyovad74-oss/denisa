@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "autocad": {
+      "command": "python",
+      "args": ["autocad_mcp/server.py"]
+    }
+  }
+}

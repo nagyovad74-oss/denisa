@@ -13,6 +13,7 @@ import time
 from typing import Any, Callable
 
 from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 
 try:
     import pythoncom
@@ -123,8 +124,9 @@ def com_tool(fn: Callable) -> Callable:
         except Exception as e:  # noqa: BLE001 – chceme vrátiť chybu modelu, nie zhodiť server
             if pythoncom is not None and isinstance(e, pythoncom.com_error):
                 detail = e.excepinfo[2] if e.excepinfo and e.excepinfo[2] else e.strerror
-                raise RuntimeError(f"AutoCAD COM chyba: {detail}") from e
-            raise
+                raise ToolError(f"AutoCAD COM chyba: {detail}") from e
+            # ToolError sa dostane k modelu aj s textom; iné výnimky MCP skryje za "Error executing tool"
+            raise ToolError(f"{type(e).__name__}: {e}") from e
 
     return mcp.tool()(wrapper)
 

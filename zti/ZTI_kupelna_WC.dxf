@@ -493,7 +493,7 @@ $SKPOLY
   9
 $TDCREATE
  40
-2461328.7752430555
+2461328.7843865743
   9
 $TDUCREATE
  40
@@ -501,7 +501,7 @@ $TDUCREATE
   9
 $TDUPDATE
  40
-2461328.7752430555
+2461328.7843865743
   9
 $TDUUPDATE
  40
@@ -933,11 +933,11 @@ $PSTYLEMODE
   9
 $FINGERPRINTGUID
   2
-{6ED77E8A-2DB2-4A87-A89A-84465BA88B0C}
+{4E5D1D9C-2086-43CB-907F-35639FBB9BF1}
   9
 $VERSIONGUID
   2
-{B7024E71-E0C5-4F40-B635-B5BEB95345DC}
+{018D5401-CB83-40C7-8CFA-DA14E190959E}
   9
 $EXTNAMES
 290
@@ -23701,7 +23701,7 @@ AcDbText
  40
 35.0
   1
-UMÝVADIELKO 450 *
+UMÝVADIELKO 450 (len SV)
   7
 ZTI
  11
@@ -23735,7 +23735,7 @@ AcDbText
  40
 35.0
   1
-20×2,8 *
+20×2,8
   7
 ZTI
  11
@@ -23769,7 +23769,7 @@ AcDbText
  40
 35.0
   1
-— *
+—
   7
 ZTI
  11
@@ -23803,7 +23803,7 @@ AcDbText
  40
 35.0
   1
-DN50 *
+DN50
   7
 ZTI
  11
@@ -24159,7 +24159,7 @@ AcDbText
  40
 40.0
   1
-* Pripojenie umývadielka U2 nie je v zadaní – navrhnuté SV + K DN50, bez TV (na odsúhlasenie).
+10. Umývadielko U2 vo WC – pripojenie len na SV (výtokový ventil / batéria na SV) a K DN50, bez TV (odsúhlasené investorom).
   7
 ZTI
  11
@@ -25273,7 +25273,7 @@ DictionaryVariables
 280
 0
   1
-1.4.4 @ 2026-10-14T18:36:21.584588+00:00
+1.4.4 @ 2026-10-14T18:49:31.083843+00:00
   0
 VISUALSTYLE
   5
@@ -31835,7 +31835,7 @@ DictionaryVariables
 280
 0
   1
-1.4.4 @ 2026-10-14T18:36:21.623694+00:00
+1.4.4 @ 2026-10-14T18:49:31.124577+00:00
   0
 ENDSEC
   0

@@ -399,7 +399,7 @@ tab = [
     ["PR", "PRÁČKA 600×600", "20×2,8", "—", "DN50", "PV +1000, ZS +700"],
     ["U1", "UMÝVADLO 600", "20×2,8", "20×2,8", "DN50", "SV/TV +550, K +500"],
     ["WC", "ZÁVESNÉ WC, modul v predstene", "20×2,8", "—", "DN100", "SV v module, K +230"],
-    ["U2", "UMÝVADIELKO 450 *", "20×2,8 *", "— *", "DN50 *", "SV +550, K +500"],
+    ["U2", "UMÝVADIELKO 450 (len SV)", "20×2,8", "—", "DN50", "SV +550, K +500"],
 ]
 RH = 105
 t_top = ty - 120
@@ -421,7 +421,7 @@ notes = [
     "7. V šachte guľové uzávery a bytové vodomery SV, TV (overiť so správcom budovy). RD min. 300×300 zo strany WC.",
     "8. Pred zakrytím tlaková skúška vodovodu (STN EN 806-4), preplach a dezinfekcia; skúška tesnosti kanalizácie.",
     "9. Práčku osadiť 100 mm od zadnej steny, prívod SV a odpad za práčkou. Výšky vývodov overiť podľa zvolených výrobkov.",
-    "* Pripojenie umývadielka U2 nie je v zadaní – navrhnuté SV + K DN50, bez TV (na odsúhlasenie).",
+    "10. Umývadielko U2 vo WC – pripojenie len na SV (výtokový ventil / batéria na SV) a K DN50, bez TV (odsúhlasené investorom).",
 ]
 ny = t_top - nrow * RH - 130
 for i, s in enumerate(notes):

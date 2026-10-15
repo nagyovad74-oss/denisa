@@ -1,0 +1,40 @@
+AUTOMATICKÁ KONTROLA VÝKRESU ZTI-01
+========================================
+
+1. Kríženia potrubí rôznych médií (v pôdoryse):
+   - SV 25x3,5 stúpačka -> kúpeľňa  ×  K DN50 U1, PR -> K1  @ (2380, 1930)
+   - SV 20x2,8 -> PR, U1  ×  TV 25x3,5 stúpačka -> kúpeľňa  @ (2350, 1870)
+   - TV 25x3,5 stúpačka -> kúpeľňa  ×  K DN50 U1, PR -> K1  @ (2380, 1870)
+   spolu: 3
+
+2. Vzdialenosti súbežných potrubí (min. osová vzdialenosť):
+   - 30 mm: SV 20x2,8 -> PR, U1 / K DN50 U1, PR -> K1
+   - 30 mm: SV 20x2,8 -> PR, U1 / TV 20x2,8 -> U1
+   - 30 mm: SV 20x2,8 -> PR, U1 / TV 20x2,8 -> V
+   - 30 mm: SV 20x2,8 -> V / K DN50 U1, PR -> K1
+   - 30 mm: SV 20x2,8 -> V / K DN50 V
+   - 30 mm: SV 20x2,8 -> V / TV 20x2,8 -> V
+
+3. Pripojenia zariaďovacích predmetov (požiadavka zadania):
+   - V: SV OK, TV OK, K OK
+   - PR: SV OK, K OK
+   - U1: SV OK, TV OK, K OK
+   - WC: SV OK, K OK
+   - U2: SV OK, K OK
+
+4. Potrubia prechádzajúce pôdorysom zariaďovacích predmetov (vedené v stene/za predmetom):
+   - SV 20x2,8 -> PR, U1 za/pod PR
+   - TV 20x2,8 -> V za/pod PR
+   - TV 20x2,8 -> U1 za/pod PR
+   - K DN50 V za/pod V
+
+5. Dĺžky a spády kanalizácie (i = 2 %):
+   - K DN50 V: L = 1.30 m, prevýšenie pri 2 % = 26 mm
+   - K DN50 U1, PR -> K1: L = 1.24 m, prevýšenie pri 2 % = 25 mm
+   - K DN50 U2: L = 1.56 m, prevýšenie pri 2 % = 31 mm
+   - K DN100 WC -> K1: L = 0.63 m, prevýšenie pri 2 % = 13 mm
+
+6. Prekrytia textov (orientačne):
+   žiadne
+
+Spodok legendy y=1990, spodok poznámok y=112, vrch hlavičky y=-1175

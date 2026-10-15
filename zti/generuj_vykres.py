@@ -129,6 +129,26 @@ _outline(walls)
 hatch(L_ST, [(2850, 1850), (3700, 1850), (3700, 2100), (2850, 2100)], 254)
 rect(L_ST, 2850, 1850, 3700, 2100, lw=25)
 
+# inštalačná predstienka SDK v kúpeľni (h = 1200): za práčkou pri zadnej stene a pozdĺž priečky s WC
+PREDSTIENKA = [(1600, 2000), (2300, 2000), (2300, 650), (2400, 650), (2400, 2100), (1600, 2100)]
+hatch(L_ST, PREDSTIENKA, 254)
+pl(L_ST, PREDSTIENKA, closed=True, lw=25)
+# obkladový box vo WC (h = 150) nad podlahou pozdĺž priečky – kryje spoločné odpadové potrubie
+BOX_WC = [(2500, 950), (2620, 950), (2620, 1700), (2500, 1700)]
+hatch(L_ST, BOX_WC, 254)
+pl(L_ST, BOX_WC, closed=True, lw=25)
+
+
+def prieraz(x1, y1, x2, y2):
+    """Prieraz v stene – obdĺžnik s krížom."""
+    rect(L_ST, x1, y1, x2, y2, color=1, lw=25)
+    pl(L_ST, [(x1, y1), (x2, y2)], color=1)
+    pl(L_ST, [(x1, y2), (x2, y1)], color=1)
+
+
+prieraz(2400, 960, 2500, 1040)  # P1 – priečka kúpeľňa / WC
+prieraz(2520, 1700, 2600, 1750)  # P2 – predná stena šachty pod RD
+
 # dvere (otváranie von do chodby)
 pl(L_ST, [(300, -100), (300, -800)], lw=35)  # krídlo 700, pánt vľavo
 arc(L_ST, (300, -100), 700, 270, 360)
@@ -139,21 +159,21 @@ pl(L_ST, [(2540, 1680), (2760, 1680)], lw=50)
 
 # ------------------------------------------------------------------ zariaďovacie predmety
 ZP = {}
-# V – vaňa 1700 x 700 pri zadnej stene
-rect(L_ZP, 0, 1400, 1700, 2100)
+# V – vaňa 1600 x 700 pri zadnej stene, s obkladovou stienkou (odpad vedený pod vaňou)
+rect(L_ZP, 0, 1400, 1600, 2100)
 b = math.tan(math.radians(90) / 4)
-pl(L_ZP, [(160, 1460), (1540, 1460, b), (1640, 1560), (1640, 1940, b), (1540, 2040),
+pl(L_ZP, [(160, 1460), (1440, 1460, b), (1540, 1560), (1540, 1940, b), (1440, 2040),
           (160, 2040, b), (60, 1940), (60, 1560, b)], closed=True)
-circle(L_ZP, (1400, 1750), 30)  # odtok
-ZP["V"] = dict(box=(0, 1400, 1700, 2100), sv=(1625, 2040), tv=(1475, 2010), k=(1400, 1750))
-# PR – práčka 600 x 600, 100 mm od zadnej steny (prívod a odpad za práčkou)
-rect(L_ZP, 1780, 1380, 2380, 1980)
-circle(L_ZP, (2080, 1680), 220)
-ZP["PR"] = dict(box=(1780, 1380, 2380, 1980), sv=(2350, 1700), k=(2380, 1600))
-# U1 – umývadlo 600 na priečke s WC
-rect(L_ZP, 1950, 700, 2400, 1300)
-ellipse(L_ZP, (2160, 1000), (0, 230), 0.65)
-ZP["U1"] = dict(box=(1950, 700, 2400, 1300), sv=(2350, 925), tv=(2320, 1075), k=(2380, 1000))
+circle(L_ZP, (1300, 1750), 30)  # odtok
+ZP["V"] = dict(box=(0, 1400, 1600, 2100), sv=(1525, 2040), tv=(1375, 2010), k=(1300, 1750))
+# PR – práčka 600 x 600 pred predstienkou (PV a ZS v predstienke za práčkou)
+rect(L_ZP, 1660, 1380, 2260, 1980)
+circle(L_ZP, (1960, 1680), 220)
+ZP["PR"] = dict(box=(1660, 1380, 2260, 1980), sv=(2300, 1700), k=(2300, 1600))
+# U1 – umývadlo 600 zavesené na predstienke
+rect(L_ZP, 1850, 700, 2300, 1300)
+ellipse(L_ZP, (2060, 1000), (0, 230), 0.65)
+ZP["U1"] = dict(box=(1850, 700, 2300, 1300), sv=(2300, 925), tv=(2300, 1075), k=(2300, 1000))
 # WC – závesné, os 3275 (450 od šachty, 425 od pravej steny)
 pl(L_ZP, [(3095, 1850), (3095, 1490, 1), (3455, 1490), (3455, 1850)], closed=True)
 ellipse(L_ZP, (3275, 1530), (0, 150), 0.75)
@@ -203,17 +223,33 @@ def pipe(layer, pts, label, lw=None):
 
 # SV – studená voda
 pipe(L_SV, [(2770, 1775), (2770, 1930), (2350, 1930)], "SV 25x3,5 stúpačka -> kúpeľňa")
-pipe(L_SV, [(2350, 1930), (2350, 2040), (1625, 2040)], "SV 20x2,8 -> V")
-pipe(L_SV, [(2350, 1930), (2350, 925)], "SV 20x2,8 -> PR, U1")
+pipe(L_SV, [(2350, 1930), (2350, 2040), (1525, 2040)], "SV 20x2,8 -> V")
+pipe(L_SV, [(2350, 1930), (2350, 925), (2300, 925)], "SV 20x2,8 -> PR, U1")
+pipe(L_SV, [(2350, 1700), (2300, 1700)], "SV 20x2,8 -> PR (PV)")
 pipe(L_SV, [(2770, 1930), (3640, 1930), (3640, 850)], "SV 20x2,8 -> WC, U2")
 pipe(L_SV, [(3150, 1930), (3150, 1890)], "SV 20x2,8 -> WC modul")
 # TV – teplá voda
 pipe(L_TV, [(2700, 1775), (2700, 1870), (2320, 1870)], "TV 25x3,5 stúpačka -> kúpeľňa")
-pipe(L_TV, [(2320, 1870), (2320, 2010), (1475, 2010)], "TV 20x2,8 -> V")
-pipe(L_TV, [(2320, 1870), (2320, 1075)], "TV 20x2,8 -> U1")
+pipe(L_TV, [(2320, 1870), (2320, 2010), (1375, 2010)], "TV 20x2,8 -> V")
+pipe(L_TV, [(2320, 1870), (2320, 1075), (2300, 1075)], "TV 20x2,8 -> U1")
 # K – kanalizácia
-pipe(L_K, [(1400, 1750), (1400, 2070), (2380, 2070)], "K DN50 V")
-pipe(L_K, [(2380, 1000), (2380, 2070), (2552, 2070)], "K DN50 U1, PR -> K1")
+# spoločné odpadové potrubie kúpeľne: V (pod vaňou) -> za PR v predstienke -> pozdĺž priečky
+# -> prieraz P1 do WC -> vo WC nad podlahou v obkladovom boxe -> prieraz P2 -> K1
+K_SPOL = [(1300, 1750), (1300, 2060), (2370, 2060), (2370, 1000), (2560, 1000), (2560, 1984)]
+pipe(L_K, K_SPOL, "K DN50 V+PR+U1 -> K1 (spoločné)")
+
+
+def _dlzka(pts):
+    return sum(math.dist(pts[i], pts[i + 1]) for i in range(len(pts) - 1))
+
+
+# výšky osi spoločného potrubia (od ±0,000) pri spáde 2 %
+I_K = 0.02
+H_V = 130.0  # os odtoku vane (sifón vane) – overiť podľa zvolenej vane
+H_P1 = H_V - I_K * _dlzka(K_SPOL[:5])  # vstup do WC (bod za prierazom P1)
+H_K1 = H_V - I_K * _dlzka(K_SPOL)
+pipe(L_K, [(2300, 1600), (2370, 1600)], "K DN50 PR (ZS)")
+pipe(L_K, [(2300, 1000), (2370, 1000)], "K DN50 U1")
 pipe(L_K, [(3680, 850), (3680, 2010), (3275, 2010)], "K DN50 U2")
 pipe(L_K, [(3275, 2010), (2641, 2010)], "K DN100 WC -> K1", lw=70)
 
@@ -233,8 +269,9 @@ def flow_arrow(x, y, ang, L=110, w=40):
     pl(L_K, [tail + (0, w, 0), tip])
 
 
-flow_arrow(2030, 2070, 0)  # zberné potrubie kúpeľne -> K1
-flow_arrow(2380, 1180, 90)
+flow_arrow(1950, 2060, 0)  # spoločné potrubie kúpeľne: za práčkou
+flow_arrow(2370, 1450, 270)  # pozdĺž priečky k prierazu P1
+flow_arrow(2560, 1300, 90)  # vo WC v obkladovom boxe k P2 / K1
 flow_arrow(2930, 2010, 180)  # WC -> K1
 flow_arrow(3680, 1350, 90)
 
@@ -248,19 +285,25 @@ def leader(pts, dots=()):
 
 
 # kúpeľňa – spoločný popis rozvodov pri zadnej stene a pri priečke
-leader([(1740, 2070), (1740, 1340), (2395, 1340)],
-       dots=[(1740, 2010), (1740, 2040), (1740, 2070), (2320, 1340), (2350, 1340), (2380, 1340)])
-pl(L_TXT, [(1740, 1340), (880, 1340)], lw=18)
-for i, s in enumerate(["SV 20×2,8 PPR PN20", "TV 20×2,8 PPR PN20", "K DN50 PP-HT, i = 2 %"]):
+leader([(1630, 2060), (1630, 1340), (2395, 1340)],
+       dots=[(1630, 2010), (1630, 2040), (1630, 2060), (2320, 1340), (2350, 1340), (2370, 1340)])
+pl(L_TXT, [(1630, 1340), (880, 1340)], lw=18)
+for i, s in enumerate(["SV 20×2,8 PPR PN20", "TV 20×2,8 PPR PN20", "K DN50 PP-HT, i = 2 %", "spoločné V + PR + U1"]):
     text(L_TXT, (900, 1260 - i * 80), H_LBL, s)
 # prívody zo šachty
-leader([(2450, 1930), (2450, 1480), (2910, 1480)], dots=[(2450, 1930), (2450, 1870)])
-text(L_TXT, (2580, 1400), H_LBL, "SV 25×3,5")
-text(L_TXT, (2580, 1320), H_LBL, "TV 25×3,5")
 # WC – v predstene
-leader([(3040, 2010), (3040, 1230), (2560, 1230)], dots=[(3040, 1930), (3040, 2010)])
-text(L_TXT, (2580, 1150), H_LBL, "SV 20×2,8")
-text(L_TXT, (2580, 1070), H_LBL, "K DN100, i = 2 %")
+leader([(3040, 2010), (3040, 1440), (2680, 1440)], dots=[(3040, 1930), (3040, 2010)])
+text(L_TXT, (2680, 1360), H_LBL, "SV 20×2,8")
+text(L_TXT, (2680, 1280), H_LBL, "K DN100, i = 2 %")
+# prívody zo šachty do kúpeľne
+leader([(2450, 1930), (2450, 1190), (2680, 1190)], dots=[(2450, 1930), (2450, 1870)])
+text(L_TXT, (2690, 1190), H_LBL, "SV/TV 25×3,5", align="ML")
+# spoločné potrubie z kúpeľne vo WC
+leader([(2560, 1110), (2680, 1110)], dots=[(2560, 1110)])
+text(L_TXT, (2690, 1110), H_LBL, "K DN50 z kúpeľne", align="ML")
+text(L_TXT, (2690, 1040), H_SM, "v boxe 120×150 nad podlahou", align="ML")
+text(L_TXT, (2380, 880), H_SM, "P1", align="C")
+text(L_TXT, (2640, 1560), H_SM, "P2", align="L")
 # U2 – zvislý popis pozdĺž steny
 text(L_TXT, (3622, 1110), H_SM, "SV 20×2,8", rot=90)
 text(L_TXT, (3567, 1110), H_SM, "K DN50, i = 2 %", rot=90)
@@ -269,34 +312,34 @@ text(L_TXT, (2700, 2055), H_SM, "K1", align="L")
 text(L_TXT, (2640, 1625), H_SM, "C", align="C")
 text(L_TXT, (2700, 1625), H_SM, "TV", align="C")
 text(L_TXT, (2770, 1625), H_SM, "SV", align="C")
-text(L_TXT, (2560, 1535), H_LBL, "Š1, RD 300×300")
+text(L_TXT, (2640, 1480), H_LBL, "Š1, RD 300×300")
 
 # označenie zariaďovacích predmetov
-for tag, pos in {"V": (850, 1700), "PR": (1990, 1650), "U1": (2160, 960), "WC": (3275, 1765),
+for tag, pos in {"V": (800, 1700), "PR": (1870, 1650), "U1": (2060, 960), "WC": (3275, 1765),
                  "U2": (3540, 820)}.items():
     text(L_TXT, pos, H_TAG, tag, align="MC")
-text(L_TXT, (2160, 1780), H_SM, "PV", align="C")
-text(L_TXT, (2160, 1530), H_SM, "ZS", align="C")
-leader([(2190, 1800), (2350, 1700)])
-leader([(2190, 1550), (2380, 1600)])
+text(L_TXT, (2060, 1780), H_SM, "PV", align="C")
+text(L_TXT, (2060, 1530), H_SM, "ZS", align="C")
+leader([(2090, 1800), (2300, 1700)])
+leader([(2090, 1550), (2300, 1600)])
 
 # miestnosti
 text(L_TXT, (400, 820), 3.5 * SCALE, "1.01 KÚPEĽŇA")
 text(L_TXT, (400, 720), H_LBL, "A = 5,04 m²   sv. v. 2600")
-text(L_TXT, (2580, 860), 3.5 * SCALE, "1.02 WC")
-text(L_TXT, (2580, 760), H_LBL, "A = 1,92 m²   sv. v. 2600")
+text(L_TXT, (2680, 860), 3.5 * SCALE, "1.02 WC")
+text(L_TXT, (2680, 760), H_LBL, "A = 1,92 m²   sv. v. 2600")
 text(L_TXT, (1700, -500), 2.5 * SCALE, "CHODBA", align="C")
 
 # ------------------------------------------------------------------ kóty
 chain([(-150, 2250), (0, 2250), (2400, 2250), (2500, 2250), (3700, 2250), (3850, 2250)], (0, 2800))
 dim((-150, 2250), (3850, 2250), (0, 3050))
-chain([(0, 2100), (1550, 2100), (1700, 2100), (1780, 2100), (2380, 2100)], (0, 2550))
+chain([(0, 2100), (1600, 2100), (2260, 2100), (2400, 2100)], (0, 2550))
 chain([(2500, 2100), (2800, 2100), (3275, 2100), (3700, 2100)], (0, 2550))
 chain([(0, 0), (0, 1400), (0, 2100)], (-500, 0), "V")
 chain([(-150, -100), (-150, 0), (-150, 2100), (-150, 2250)], (-800, 0), "V")
 chain([(3700, 500), (3700, 625), (3700, 850), (3700, 1075), (3700, 1850), (3700, 2100)], (4150, 0), "V")
 dim((3850, 400), (3850, 2250), (4400, 0), "V")
-chain([(1950, 0), (1950, 700), (1950, 1000), (1950, 1300)], (1850, 0), "V")
+chain([(1850, 0), (1850, 700), (1850, 1000), (1850, 1300)], (1750, 0), "V")
 chain([(0, 0), (300, 0), (1000, 0), (2400, 0)], (0, 200))
 chain([(2500, 500), (2650, 500), (3250, 500)], (0, 580))
 
@@ -376,9 +419,10 @@ lrow("SMER SPÁDU KANALIZÁCIE", lambda y: (pl(L_K, [(LX, y), (LX + 600, y)]),
 lrow("STAVEBNÁ KONŠTRUKCIA (EXIST.)",
      lambda y: (hatch(L_ST, [(LX, y - 50), (LX + 600, y - 50), (LX + 600, y + 50), (LX, y + 50)], 253),
                 rect(L_ST, LX, y - 50, LX + 600, y + 50)))
-lrow("INŠTALAČNÁ PREDSTENA SDK",
+lrow("INŠTALAČNÁ PREDSTENA / PREDSTIENKA SDK, OBKLADOVÝ BOX",
      lambda y: (hatch(L_ST, [(LX, y - 50), (LX + 600, y - 50), (LX + 600, y + 50), (LX, y + 50)], 254),
                 rect(L_ST, LX, y - 50, LX + 600, y + 50, lw=25)))
+lrow("P1, P2 – PRIERAZ Ø80 PRE POTRUBIE K DN50", lambda y: prieraz(LX + 250, y - 40, LX + 350, y + 40))
 lrow("V, PR, U1, WC, U2 – OZNAČENIE ZARIAĎOVACIEHO PREDMETU", lambda y: text(L_TXT, (LX + 300, y), H_TAG * 0.8, "U1", align="MC"))
 lrow("PV / ZS – PRÁČKOVÝ VENTIL / ZÁPACHOVÁ UZÁVIERKA PRÁČKY", lambda y: text(L_TXT, (LX + 300, y), H_SM, "PV / ZS", align="MC"))
 lrow("Š1 – INŠTALAČNÁ ŠACHTA, RD – REVÍZNE DVIERKA 300×300", lambda y: pl(L_ST, [(LX + 150, y), (LX + 450, y)], lw=50))
@@ -395,7 +439,7 @@ pl(L_TXT, [(LX, ty - 40), (LX + 2600, ty - 40)], lw=35)
 cols = [0, 230, 1500, 1950, 2400, 2850, IX1 - 60 - LX]
 hdr = ["OZN.", "ZARIAĎOVACÍ PREDMET", "SV", "TV", "K", "VÝŠKY VÝVODOV OD ±0,000"]
 tab = [
-    ["V", "VAŇA 1700×700", "20×2,8", "20×2,8", "DN50", "batéria +800, odtok pod vaňou"],
+    ["V", "VAŇA 1600×700", "20×2,8", "20×2,8", "DN50", f"batéria +800, os odtoku +{H_V:.0f}"],
     ["PR", "PRÁČKA 600×600", "20×2,8", "—", "DN50", "PV +1000, ZS +700"],
     ["U1", "UMÝVADLO 600", "20×2,8", "20×2,8", "DN50", "SV/TV +550, K +500"],
     ["WC", "ZÁVESNÉ WC, modul v predstene", "20×2,8", "—", "DN100", "SV v module, K +230"],
@@ -416,12 +460,16 @@ notes = [
     "2. Prípojky od stúpačiek DN20 = PPR 25×3,5, pripojovacie potrubie k predmetom DN15 = PPR 20×2,8.",
     "3. SV izolovať proti orosovaniu, TV tepelne izolovať (hrúbka izolácie podľa platných predpisov).",
     "4. Vnútorná kanalizácia podľa STN EN 12056 a STN 73 6760, PP-HT, hrdlové spoje s tesnením. Spád DN50 min. 2 %, DN100 min. 1 % (navrhnuté 2 %).",
-    "5. Vodovod viesť nad kanalizáciou. Pri vstupe do kúpeľne (roh pri šachte) sa SV/TV križujú s K – dodržať výškové odsadenie.",
+    "5. Vodovod viesť nad kanalizáciou. V predstienke a pri šachte sa SV/TV križujú s K – dodržať výškové odsadenie.",
     "6. Napojenie na exist. stúpačky SV / TV / C a K1 DN100 v šachte Š1 – pred realizáciou overiť stav, materiál a dimenzie.",
     "7. V šachte guľové uzávery a bytové vodomery SV, TV (overiť so správcom budovy). RD min. 300×300 zo strany WC.",
     "8. Pred zakrytím tlaková skúška vodovodu (STN EN 806-4), preplach a dezinfekcia; skúška tesnosti kanalizácie.",
-    "9. Práčku osadiť 100 mm od zadnej steny, prívod SV a odpad za práčkou. Výšky vývodov overiť podľa zvolených výrobkov.",
+    "9. Práčka pred predstienkou, PV a ZS v predstienke za práčkou. Výšky vývodov overiť podľa zvolených výrobkov.",
     "10. Umývadielko U2 vo WC – pripojenie len na SV (výtokový ventil / batéria na SV) a K DN50, bez TV (odsúhlasené investorom).",
+    "11. V, PR a U1 – SPOLOČNÉ odpadové potrubie K DN50: pod vaňou za obkladovou stienkou, v predstienke SDK (h 1200) za obkladom,",
+    f"     prierazom P1 Ø80 v priečke do WC, vo WC nad podlahou v obkladovom boxe 120×150, prierazom P2 Ø80 pod RD do šachty Š1,",
+    f"     na K1 novou odbočkou DN100/50 45°. Os: odtok V +{H_V:.0f}, P1 +{H_P1:.0f}, K1 +{H_K1:.0f}. Zaústenia PR a U1 odbočkami 45°,",
+    "     pri P1 čistiaci kus s revíznym otvorom v obklade. Predmety majú vlastné zápachové uzávierky; vetranie cez K1.",
 ]
 ny = t_top - nrow * RH - 130
 for i, s in enumerate(notes):
@@ -518,6 +566,11 @@ def report():
             continue
         ln = sum(math.dist(a, b) for a, b in seg_list(p["pts"]))
         out.append(f"   - {p['label']}: L = {ln / 1000:.2f} m, prevýšenie pri 2 % = {ln * 0.02:.0f} mm")
+    out.append("")
+    out.append("5a. Výšky osi spoločného potrubia K DN50 (V+PR+U1), i = 2 %:")
+    out.append(f"   - odtok V +{H_V:.0f} mm, za P1 vo WC +{H_P1:.0f} mm, pri K1 +{H_K1:.0f} mm")
+    out.append(f"   - vrch rúry vo WC max +{H_P1 + 25:.0f} mm -> box h = 150 mm kryje potrubie aj s obkladom")
+    out.append(f"   - spodok rúry pri K1 +{H_K1 - 25:.0f} mm (nad podlahou: {'OK' if H_K1 - 25 > 0 else 'NIE'})")
     out.append("")
     out.append("6. Prekrytia textov (orientačne):")
     boxes = []

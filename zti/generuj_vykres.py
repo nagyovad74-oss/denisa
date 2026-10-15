@@ -469,7 +469,7 @@ notes = [
     "11. V, PR a U1 – SPOLOČNÉ odpadové potrubie K DN50: pod vaňou za obkladovou stienkou, v predstienke SDK (h 1200) za obkladom,",
     f"     prierazom P1 Ø80 v priečke do WC, vo WC nad podlahou v obkladovom boxe 120×150, prierazom P2 Ø80 pod RD do šachty Š1,",
     f"     na K1 novou odbočkou DN100/50 45°. Os: odtok V +{H_V:.0f}, P1 +{H_P1:.0f}, K1 +{H_K1:.0f}. Zaústenia PR a U1 odbočkami 45°,",
-    "     pri P1 čistiaci kus s revíznym otvorom v obklade. Predmety majú vlastné zápachové uzávierky; vetranie cez K1.",
+    "     pri P1 čistiaci kus s revíznym otvorom v obklade. Predmety majú vlastné zápachové uzávierky; vetranie cez K1.",    "12. Vaňa skrátená zo zadaných 1700 na 1600×700 kvôli inštalačnej predstienke (odsúhlasené investorom).",
 ]
 ny = t_top - nrow * RH - 130
 for i, s in enumerate(notes):

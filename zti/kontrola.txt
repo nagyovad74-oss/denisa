@@ -46,4 +46,4 @@ AUTOMATICKÁ KONTROLA VÝKRESU ZTI-01
 6. Prekrytia textov (orientačne):
    žiadne
 
-Spodok legendy y=1825, spodok poznámok y=-381, vrch hlavičky y=-1175
+Spodok legendy y=1825, spodok poznámok y=-463, vrch hlavičky y=-1175

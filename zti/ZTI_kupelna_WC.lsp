@@ -390,6 +390,7 @@
   (zti:tx "TEXT" 4525 -217 40 "     prierazom P1 \\U+00D880 v prie\\U+010Dke do WC, vo WC nad podlahou v obkladovom boxe 120\\U+00D7150, prierazom P2 \\U+00D880 pod RD do \\U+0161achty \\U+01601," 0 0 0.000000)
   (zti:tx "TEXT" 4525 -299 40 "     na K1 novou odbo\\U+010Dkou DN100/50 45\\U+00B0. Os: odtok V +130, P1 +77, K1 +58. Za\\U+00FAstenia PR a U1 odbo\\U+010Dkami 45\\U+00B0," 0 0 0.000000)
   (zti:tx "TEXT" 4525 -381 40 "     pri P1 \\U+010Distiaci kus s rev\\U+00EDznym otvorom v obklade. Predmety maj\\U+00FA vlastn\\U+00E9 z\\U+00E1pachov\\U+00E9 uz\\U+00E1vierky; vetranie cez K1." 0 0 0.000000)
+  (zti:tx "TEXT" 4525 -463 40 "12. Va\\U+0148a skr\\U+00E1ten\\U+00E1 zo zadan\\U+00FDch 1700 na 1600\\U+00D7700 kv\\U+00F4li in\\U+0161tala\\U+010Dnej predstienke (ods\\U+00FAhlasen\\U+00E9 investorom)." 0 0 0.000000)
 )
 (defun zti:koty ()
   (setvar "CLAYER" "KOTY")

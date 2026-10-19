@@ -9,6 +9,9 @@
 | `kuchyna_ostrovcek.lsp` | AutoLISP – príkaz `OSTROVCEK`: odstráni vybraný stôl a nakreslí kuchynský ostrovček 1800×900 s 3 barovými stoličkami |
 | `kuchyna_ostrovcek.png` | náhľad ostrovčeka |
 | `kuchyna_ostrovcek.py` | zdroj ostrovčeka (rozmery, počet stoličiek) – po zmene spusti `python zti/kuchyna_ostrovcek.py` |
+| `ZTI_schema_kanalizacie.lsp` / `.dxf` | ZTI-02 – schéma kanalizácie (rozvinutý rez s tabuľkou), príkaz `ZTISCHEMA`; list leží v modeli vpravo vedľa ZTI-01 |
+| `nahlad_schema.png` | náhľad ZTI-02 |
+| `schema_kanalizacie.py` | zdroj ZTI-02 – dĺžky a výšky berie z `generuj_vykres.py` |
 | `generuj_vykres.py` | zdroj – všetka geometria; po zmene spusti `python zti/generuj_vykres.py` (potrebuje `ezdxf`, `matplotlib`, `shapely`) |
 
 ## Použitie LSP v AutoCADe

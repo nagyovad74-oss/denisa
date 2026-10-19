@@ -15,5 +15,8 @@ Pri práci vo výkrese:
   **dvojbodkočiarkovanou** čiarou (červená) – v pôdoryse, v schémach/axonometrii aj v legende značiek.
   Mierku vzoru čiar nastav podľa mierky výkresu tak, aby bola čiarka na papieri cca 6–8 mm.
   Krúžky stúpačiek, vývody a drobné značky na vrstvách SV/TV zostávajú plné.
+- **Schémy kanalizácie** kresli v štýle jej vzorového výkresu rodinného domu: rozvinutý rez,
+  potrubie červenou čiarou so sklonom (i = … %), tvarovky (odbočky 45°, čistiace kusy), označené stúpačky
+  (K1…), výškové kóty osí od ±0,000 a pod rezom tabuľka úsekov (materiál, DN, dĺžka, spád, výška osi).
 - **Vzorové fotky a obrázky**, ktoré pošle používateľka, sú len predloha – **nikdy ich neupravuj**.
   Pracuj vždy v jej skutočnom výkrese (napr. ZTI3), nie v novom ukážkovom.

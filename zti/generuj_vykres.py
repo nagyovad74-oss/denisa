@@ -784,25 +784,26 @@ LSP_DIMSTYLE = r'''
 '''
 
 
-def write_lsp():
+def write_lsp(name=NAME, cmd="ZTI", pfx="zti", label="ZTI-01", layers=None):
+    layers = layers or LAYERS
     lines = [LSP_HEAD]
-    for name, (col, lw, lt, desc) in LAYERS.items():
-        lines.append(f'  (zti:layer "{name}" {col} "{lw / 100:.2f}" "{lt}" "{desc}")')
+    for lname, (col, lw, lt, desc) in layers.items():
+        lines.append(f'  (zti:layer "{lname}" {col} "{lw / 100:.2f}" "{lt}" "{desc}")')
     lines.append(LSP_DIMSTYLE)
     non_dims = [e for e in E if e["t"] != "dim"]
     dims = [e for e in E if e["t"] == "dim"]
     parts = [non_dims[i:i + 150] for i in range(0, len(non_dims), 150)]
     for i, part in enumerate(parts):
-        lines.append(f"(defun zti:cast{i} ()")
+        lines.append(f"(defun {pfx}:cast{i} ()")
         lines += ["  " + lsp_entity(e) for e in part]
         lines.append(")")
-    lines.append("(defun zti:koty ()")
+    lines.append(f"(defun {pfx}:koty ()")
     lines.append('  (setvar "CLAYER" "KOTY")')
     lines += ["  " + lsp_entity(e) for e in dims]
     lines.append(")")
-    casts = " ".join(f"(zti:cast{i})" for i in range(len(parts)))
+    casts = " ".join(f"({pfx}:cast{i})" for i in range(len(parts)))
     lines.append(rf'''
-(defun zti:kresli (ox oy / old)
+(defun {pfx}:kresli (ox oy / old)
   (vl-load-com)
   (setq zti:ox ox zti:oy oy zti:err 0)
   (setq old (mapcar (quote getvar) (quote ("CMDECHO" "OSMODE" "CLAYER" "HPNAME" "ORTHOMODE"))))
@@ -813,7 +814,7 @@ def write_lsp():
   (setvar "ORTHOMODE" 0)
   (zti:setup)
   {casts}
-  (zti:koty)
+  ({pfx}:koty)
   (setvar "CLAYER" (nth 2 old))
   (setvar "HPNAME" (nth 3 old))
   (command "_.UCS" "_P")
@@ -822,10 +823,10 @@ def write_lsp():
   (setvar "ORTHOMODE" (nth 4 old))
   (setvar "CMDECHO" (nth 0 old))
   (command "_.ZOOM" "_E")
-  (princ (strcat "\nZTI-01 nakreslene. Neuspesnych entmake: " (itoa zti:err)))
+  (princ (strcat "\n{label} nakreslene. Neuspesnych entmake: " (itoa zti:err)))
   zti:err)
 
-(defun c:ZTI (/ u p)
+(defun c:{cmd} (/ u p)
   (setq u (getvar "INSUNITS"))
   (if (and (/= u 4)
            (/= "Ano" (progn (initget "Ano Nie")
@@ -834,19 +835,20 @@ def write_lsp():
     (progn (princ "\nPreruseny - nastav INSUNITS na 4 (mm).") (exit)))
   (setq p (getpoint "\nBod vlozenia (lavy predny vnutorny roh kupelne) <0,0>: "))
   (if (not p) (setq p '(0.0 0.0 0.0)))
-  (zti:kresli (car p) (cadr p))
+  ({pfx}:kresli (car p) (cadr p))
   (princ))
 
-(princ "\nZTI-01 nacitane. Spusti prikazom ZTI.")
+(princ "\n{label} nacitane. Spusti prikazom {cmd}.")
 (princ)
 ''')
-    (OUT / f"{NAME}.lsp").write_text("\n".join(lines), encoding="ascii")
+    (OUT / f"{name}.lsp").write_text("\n".join(lines), encoding="ascii")
 
 
 # ===================================================================== DXF + náhľad
 
 
-def write_dxf():
+def write_dxf(name=NAME, layers=None):
+    layers = layers or LAYERS
     import ezdxf
 
     doc = ezdxf.new("R2018", setup=True)
@@ -854,10 +856,10 @@ def write_dxf():
     doc.header["$INSUNITS"] = 4
     doc.header["$LTSCALE"] = 1.0
     doc.styles.add("ZTI", font="arial.ttf")
-    for name, desc, pat in (LT_SV, LT_TV):
-        doc.linetypes.add(name, pattern=[sum(abs(v) for v in pat)] + pat, description=desc)
-    for name, (col, lw, lt, desc) in LAYERS.items():
-        doc.layers.add(name, color=col, lineweight=lw, linetype=lt).description = desc
+    for ltn, desc, pat in (LT_SV, LT_TV):
+        doc.linetypes.add(ltn, pattern=[sum(abs(v) for v in pat)] + pat, description=desc)
+    for lname, (col, lw, lt, desc) in layers.items():
+        doc.layers.add(lname, color=col, lineweight=lw, linetype=lt).description = desc
     ds = doc.dimstyles.new("ZTI_25")
     for k, v in dict(dimscale=25, dimtxt=1.8, dimasz=1.5, dimtsz=1.2, dimexe=1.5, dimexo=1.0, dimgap=0.6,
                      dimdle=1.2, dimdec=0, dimtad=1, dimtih=0, dimtoh=0, dimlunit=2, dimzin=8,
@@ -897,11 +899,11 @@ def write_dxf():
             ang = 0 if e["d"] == "H" else 90
             msp.add_linear_dim(base=e["base"], p1=e["p1"], p2=e["p2"], angle=ang, dimstyle="ZTI_25",
                                dxfattribs={"layer": L_KOTY}).render()
-    doc.saveas(OUT / f"{NAME}.dxf")
+    doc.saveas(OUT / f"{name}.dxf")
     return doc
 
 
-def write_png(doc):
+def write_png(doc, views=None):
     import matplotlib
 
     matplotlib.use("Agg")
@@ -910,7 +912,7 @@ def write_png(doc):
     from ezdxf.addons.drawing.config import Configuration, BackgroundPolicy, ColorPolicy, LineweightPolicy
     from ezdxf.addons.drawing.matplotlib import MatplotlibBackend
 
-    for fname, view in [("nahlad.png", None), ("nahlad_detail.png", (-900, -900, 4500, 3200))]:
+    for fname, view in views or [("nahlad.png", None), ("nahlad_detail.png", (-900, -900, 4500, 3200))]:
         fig = plt.figure(figsize=(16.54, 11.69) if view is None else (16, 11))
         ax = fig.add_axes([0, 0, 1, 1])
         cfg = Configuration(background_policy=BackgroundPolicy.WHITE, color_policy=ColorPolicy.COLOR,

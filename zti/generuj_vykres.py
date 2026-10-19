@@ -24,15 +24,19 @@ SCALE = 25  # mierka výkresu 1:25 -> výška textu v modeli = mm na papieri * 2
 LAYERS = {
     "ST_STAVBA": (7, 50, "Continuous", "Stavebna cast"),
     "ZTI_ZARIADOVACIE_PREDMETY": (8, 25, "Continuous", "Zariadovacie predmety"),
-    "ZTI_SV": (3, 35, "Continuous", "ZTI - studena voda"),
-    "ZTI_TV": (1, 35, "ZTI_TV", "ZTI - tepla voda"),
+    "ZTI_SV": (5, 35, "ZTI_BODKOCIARA", "ZTI - studena voda"),
+    "ZTI_TV": (1, 35, "ZTI_DVOJBODKOCIARA", "ZTI - tepla voda"),
     "ZTI_KANALIZACIA": (32, 50, "Continuous", "ZTI - kanalizacia"),
     "KOTY": (4, 18, "Continuous", "Koty"),
     "TEXT": (7, 25, "Continuous", "Texty a popisy"),
     "RAM": (7, 50, "Continuous", "Ram a popisove pole"),
 }
 L_ST, L_ZP, L_SV, L_TV, L_K, L_KOTY, L_TXT, L_RAM = LAYERS
-TV_LTSCALE = 10.0  # čiarkovanie TV: 12/-6 mm * 10 -> 4,8 / 2,4 mm na papieri v M 1:25
+# Vzor čiar vody (pravidlo z CLAUDE.md): SV bodkočiarkovaná, TV dvojbodkočiarkovaná.
+# Vzory sú v mm na papieri, mierka typu čiary = mierka výkresu -> čiarka 8 mm, medzera 1,5 mm na A3.
+LT_SV = ("ZTI_BODKOCIARA", "SV ____ . ____ .", [8.0, -1.5, 0.0, -1.5])
+LT_TV = ("ZTI_DVOJBODKOCIARA", "TV ____ . . ____", [8.0, -1.5, 0.0, -1.5, 0.0, -1.5])
+WATER_LTSCALE = float(SCALE)
 
 E: list[dict] = []  # všetky entity
 
@@ -217,7 +221,7 @@ PIPES: list[dict] = []
 
 
 def pipe(layer, pts, label, lw=None):
-    pl(layer, pts, lw=lw, lts=TV_LTSCALE if layer == L_TV else None)
+    pl(layer, pts, lw=lw, lts=WATER_LTSCALE if layer in (L_SV, L_TV) else None)
     PIPES.append(dict(layer=layer, pts=pts, label=label))
 
 
@@ -398,8 +402,8 @@ def lrow(desc, draw):
     rows.append((desc, draw))
 
 
-lrow("STUDENÁ VODA – SV, PPR PN20", lambda y: pl(L_SV, [(LX, y), (LX + 600, y)]))
-lrow("TEPLÁ VODA – TV, PPR PN20", lambda y: pl(L_TV, [(LX, y), (LX + 600, y)], lts=TV_LTSCALE))
+lrow("STUDENÁ VODA – SV, PPR PN20", lambda y: pl(L_SV, [(LX, y), (LX + 600, y)], lts=WATER_LTSCALE))
+lrow("TEPLÁ VODA – TV, PPR PN20", lambda y: pl(L_TV, [(LX, y), (LX + 600, y)], lts=WATER_LTSCALE))
 lrow("KANALIZÁCIA – PRIPOJOVACIE POTRUBIE K, PP-HT", lambda y: pl(L_K, [(LX, y), (LX + 600, y)]))
 lrow("K1 – KANALIZAČNÁ STÚPAČKA DN100 (EXIST.)",
      lambda y: (circle(L_K, (LX + 300, y), 55, lw=70), circle(L_K, (LX + 300, y), 30)))
@@ -620,8 +624,13 @@ def f(v):
     return f"{v:.3f}".rstrip("0").rstrip(".") if isinstance(v, float) else str(v)
 
 
+def solid_symbol(e):
+    """Krúžky stúpačiek, vývody a značky na vrstvách SV/TV kreslíme plnou čiarou."""
+    return e["layer"] in (L_SV, L_TV) and not e.get("lts")
+
+
 def props(e):
-    s = ""
+    s = ' (cons 6 "Continuous")' if solid_symbol(e) else ""
     if e.get("color") is not None:
         s += f" (cons 62 {e['color']})"
     if e.get("lw") is not None:
@@ -749,11 +758,16 @@ LSP_HEAD = r''';;; =============================================================
     (entmake '((0 . "STYLE") (100 . "AcDbSymbolTableRecord") (100 . "AcDbTextStyleTableRecord")
                (2 . "ZTI") (70 . 0) (40 . 0.0) (41 . 1.0) (50 . 0.0) (71 . 0) (42 . 2.5)
                (3 . "arial.ttf") (4 . ""))))
-  ;; typ ciary pre TV
-  (if (not (tblsearch "LTYPE" "ZTI_TV"))
+  ;; typy ciar vody: SV bodkociarkovana, TV dvojbodkociarkovana (vzor v mm na papieri)
+  (if (not (tblsearch "LTYPE" "ZTI_BODKOCIARA"))
     (entmake '((0 . "LTYPE") (100 . "AcDbSymbolTableRecord") (100 . "AcDbLinetypeTableRecord")
-               (2 . "ZTI_TV") (70 . 0) (3 . "TV __ __ __") (72 . 65) (73 . 2) (40 . 18.0)
-               (49 . 12.0) (74 . 0) (49 . -6.0) (74 . 0))))
+               (2 . "ZTI_BODKOCIARA") (70 . 0) (3 . "SV ____ . ____ .") (72 . 65) (73 . 4) (40 . 11.0)
+               (49 . 8.0) (74 . 0) (49 . -1.5) (74 . 0) (49 . 0.0) (74 . 0) (49 . -1.5) (74 . 0))))
+  (if (not (tblsearch "LTYPE" "ZTI_DVOJBODKOCIARA"))
+    (entmake '((0 . "LTYPE") (100 . "AcDbSymbolTableRecord") (100 . "AcDbLinetypeTableRecord")
+               (2 . "ZTI_DVOJBODKOCIARA") (70 . 0) (3 . "TV ____ . . ____") (72 . 65) (73 . 6) (40 . 12.5)
+               (49 . 8.0) (74 . 0) (49 . -1.5) (74 . 0) (49 . 0.0) (74 . 0) (49 . -1.5) (74 . 0)
+               (49 . 0.0) (74 . 0) (49 . -1.5) (74 . 0))))
 '''
 
 LSP_DIMSTYLE = r'''
@@ -840,7 +854,8 @@ def write_dxf():
     doc.header["$INSUNITS"] = 4
     doc.header["$LTSCALE"] = 1.0
     doc.styles.add("ZTI", font="arial.ttf")
-    doc.linetypes.add("ZTI_TV", pattern=[18.0, 12.0, -6.0], description="TV __ __ __")
+    for name, desc, pat in (LT_SV, LT_TV):
+        doc.linetypes.add(name, pattern=[sum(abs(v) for v in pat)] + pat, description=desc)
     for name, (col, lw, lt, desc) in LAYERS.items():
         doc.layers.add(name, color=col, lineweight=lw, linetype=lt).description = desc
     ds = doc.dimstyles.new("ZTI_25")
@@ -860,6 +875,8 @@ def write_dxf():
             at["lineweight"] = e["lw"]
         if e.get("lts"):
             at["ltscale"] = e["lts"]
+        if solid_symbol(e):
+            at["linetype"] = "Continuous"
         t = e["t"]
         if t == "pl":
             msp.add_lwpolyline([(x, y, sw, ew, bu) for x, y, bu, sw, ew in e["pts"]], format="xyseb",
